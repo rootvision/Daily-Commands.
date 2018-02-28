@@ -1,0 +1,326 @@
+****************
+
+
+nano opt. in shell:-
+---------------------
+nano 
+ctrl + w ---> search opt.
+ctrl + x ----> exit and save by press y
+
+
+Check load average commands:-
+-----------------------------
+# w
+# uptime
+# top
+# cat /proc/loadavg
+
+
+kill the process:-
+------------------
+# kill -9 PID
+# killall -9 php
+
+
+You can kill httpd, if Apache is consuming high resources:-
+-----------------------------------------------------------
+# killall -9 httpd
+# /etc/init.d/httpd restart
+
+
+To update cpanel license :-
+---------------------------
+/usr/local/cpanel/cpkeyclt
+
+
+info.php content:-
+-------------------
+<? phpinfo(); ?>
+
+
+For auditing of account:-
+-------------------------
+# du -sch *
+
+
+Check the number of connections from an IP address currently connected to the server:-
+--------------------------------------------------------------------------------------
+# netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n
+
+
+Restore the backup commands:-
+-----------------------------
+rsync -a /path/to/backup /path/to/restored/folder ===> (Restore the backup of account)
+tar -zcvf tar-archive-name.tar.gz source-folder-name
+tar -zcf filename.tar.gz
+tar -xvf homedir.tar                              ===> (To untar in SSH)
+tar -tvf file.tar                                 ===> (To view the files in tar.gz)
+link : http://www.cyberciti.biz/faq/list-the-contents-of-a-tar-or-targz-file/
+link : http://www.cyberciti.biz/faq/tar-extract-linux/
+
+
+To suspend the account :-
+-------------------------
+/scripts/suspendacct username "reason"    ===> (To suspend the account)
+/scripts/unsuspendacct username           ===> (To unsuspend the account)
+/scripts/killacct username                ===> (To completely terminate the account from server)
+
+
+Backup Script Command:-
+-----------------------
+/scripts/restorepkg --force fullpath&namefilebackup
+/scripts/pkgacct <username> (To create backup)
+
+
+CSF command :-
+--------------
+csf -g                 ===> (IP to check ofr IP block)
+csf -dr                ===> (IP to remove IP from block list)
+csf -r                 ===> (To restart firewall)
+csf -a                 ===> (To accept IP)
+csf -x                 ===> (To disable firwall)
+grep -rl IPADDRESS /var/lib//mysql/cphulkd/  ===> (Check Ip address in cPhulk )
+
+
+To correct the files/directory permissions inside public_html directory
+======================
+find . -type d -exec chmod 755 {} \;
+find . -type f -exec chmod 644 {} \;
+======================
+
+
+Cronjob Command :-
+------------------
+crontab -e
+crontab -u samuelba -l
+
+
+maldet scan:-
+-------------
+maldet -a /home2/username/                    ===> (To scan a specific user's home directory)
+maldet -a /home/username/public_html/         ===> (To scan a specific user's home & public_html directory)
+maldet -b --scan-all /home?/?/public_?        ===> (To scan for all user's public_html and public_ftp in all home directories)
+maldet --report list                          ===> (List all scan reports time and SCANID)
+maldet --report SCANID                        ===> (Show a specific report details)
+grep "{scan}" /usr/local/maldetect/event_log  ===> (Show all scan details from log file)
+maldet -q SCANID                              ===> (By default the quarantine is disabled)
+clamscan -ri /home/username/public_html/
+
+
+Handler issue :-
+----------------
+just edit .htaccess file. And uncomment the handler php line.
+
+
+To check Email:-
+----------------
+# exim -bpc --->  to view the number of emails in the queue
+# exim -bp --->  emails that are currently in queue
+/usr/sbin/exim -bpr | grep “<” | wc -l    --->  Number of emails in the que
+/usr/sbin/exim -bpr | grep frozen | wc -l   --->  How many Frozen mails on the queue
+/usr/sbin/exim -bpr | grep frozen | awk '{print $3}' | xargs exim -Mrm  --->  Deleteing Frozen Messages
+
+
+TO check mails :-
+-----------------
+exim -bpc
+exim -Mvh mail-id
+exim -Mvb mail-id
+tail -f /var/log/exim_mainlog | grep domain_name  ===> (For mail delivery monitoring purposes, you may execute this command)
+grep [**] /var/log/exim_mainlog
+vi  /etc/remotedomains                            ===> (To add the domain_name in list)
+tail -f /var/log/maillog                          ===> (To view mailbox you can use mail command)
+grep something /var/log/maillog
+exigrep ------@domain.com /var/log/exim_mainlog   ===> (To check the sent email status)
+
+
+To check mail logs:-
+--------------------
+#cat /var/log/exim_mainlog
+#exigrep example.com /var/log/exim_mainlog
+#grep someone@example.com /usr/local/psa/var/log/maillog |more
+#tail -f /usr/local/psa/var/log/maillog
+
+
+Restart Command:-
+-----------------
+/etc/init.d/service restart     ===> (stop, start, status by using service)
+systemctl restart service       ===> (stop, start, status by using service)
+service <service> restart       ===> (stop, start, status by using service)
+/script/restartsrv_service      ===> (stop, start, status by using service)
+
+
+If Webmail.domainname.TLD is showing default page then do following:-
+---------------------------------------------------------------------
+Go to WHM >> Main >> Server Configuration >> Tweak Settings >> serach for "proxy subdomains" >> ON
+
+
+IP blacklist check URL:-
+------------------------
+link : http://www.blacklistalert.org/
+link : http://whatismyipaddress.com/blacklist-check
+link : http://www.mxtoolbox.com/blacklists.aspx
+
+
+Default wordpress code in .htaccess:-
+--------------------------------------
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>                          
+# END WordPress
+
+
+how to increase phpmyadmin import file size :-
+-----------------------------------------------
+pico /usr/local/cpanel/3rdparty/etc/phpmyadmin/php.ini
+post_max_size = 55M 
+upload_max_filesize = 55M
+
+
+To block country IP:-
+---------------------
+go to configure firewall >> seach for cc_deny and put country code there and update
+All country code link : http://webstore.lexi.com/s.nl/ctype.KB/it.I/id.378/KB.3234/.f
+
+
+cloudlinux documentation:-
+--------------------------
+Read this 4 times
+link : http://docs.cloudlinux.com/index.html?cagefs.html
+
+
+--------------------------------------------------------------------------------------------------
+inode commands :-
+-----------------
+1) For dedicated customers you can check the inodes of an account on your server by using SSH:
+=> quota -s <cpanel username>
+
+2) If you have SSH access to your account you can view the inodes for a specific folder using the 
+
+following command:
+=> echo "Detailed Inode usage for: $(pwd)" ; for d in `find -maxdepth 1 -type d |cut -d\/ -f2 |grep -xv . |sort`; do c=$(find $d |wc -l) ; printf"$c\t\t- $d\n" ; done ; printf "Total: \t\t$(find $(pwd) | wc -l)\n"
+
+3) To display inode in the stats of Cpanel account
+=> WHM -> Tweak Settings -> "Display File Usage information in the cPanel stats bar (inode count)"
+----------------------------------------------------------------------------------------------------
+
+=========================================================================================
+Configure Server
+=========================================================================================
+
+Configure VPS (Cents os) :-
+===========================
+
+Firewall installation in shell:-
+---------------------------------
+cd /usr/src
+rm -fv csf.tgz
+wget https://download.configserver.com/csf.tgz
+tar -xzf csf.tgz
+cd csf
+sh install.sh
+
+
+
+ConfigServer Mail Queues:-
+--------------------------
+To install or upgrade cmq simply do the following from the root shell via SSH:
+cd /usr/src
+rm -fv /usr/src/cmq.tgz
+wget http://download.configserver.com/cmq.tgz
+tar -xzf cmq.tgz
+cd cmq
+sh install.sh
+rm -Rfv /usr/src/cmq*
+
+Then login to WHM and scroll to the bottom of the left hand menu and you should see "ConfigServer Mail Queues"
+
+If you want to uninstall, simply:-
+----------------------------------
+cd /usr/src
+rm -fv /usr/src/cmq.tgz
+wget http://download.configserver.com/cmq.tgz
+tar -xzf cmq.tgz
+cd cmq
+sh uninstall.sh
+rm -Rfv /usr/src/cmq*
+
+
+
+Maldet installation:-
+---------------------
+cd /usr/local/src/
+wget http://www.rfxn.com/downloads/maldetect-current.tar.gz
+tar -xzf maldetect-current.tar.gz
+cd maldetect-*
+sh ./install.sh or sudo sh ./install.sh
+maldet -d && maldet -u
+
+
+
+How to Update CURL with CPanel on CentOS:-
+--------------------------------------------
+root@server1 [/usr/local/src]# /usr/bin/curl -V
+root@server1 [~]# cd /usr/local/src/
+root@server1 [/usr/local/src]#tar -xvf c-ares-1.10.0.tar.gz
+root@server1 [/usr/local/src]# wget http://curl.haxx.se/download/curl-7.46.0.tar.gz
+root@server1 [/usr/local/src]#tar -xvf curl-7.46.0.tar.gz
+root@server1 [/usr/local/src/c-ares-1.10.0]# ./configure
+root@server1 [/usr/local/src/c-ares-1.10.0]# make   or  make all-am   or  (refer this)--> <make && make install>
+root@server1 [/usr/local/src/c-ares-1.10.0]# make install
+root@server1 [/usr/local/src/curl-7.46.0]# ./configure --enable-ares=/usr/local/src/c-ares-1.10.0 --enable-http --enable-imap --enable-pop3 --enable-ftp --enable-proxy --enable-tftp --enable-ntlm --enable-static --with-ssl=/usr/local/ssl --enable-ipv6 --enable-shared --disable-ldap --enable-gobher --enable-smtp --with-libidn --disable-rtsp --without-zlib
+root@server1 [/usr/local/src/curl-7.46.0]#make
+root@server1 [/usr/local/src/curl-7.46.0]# make install
+root@server1 [~]# curl-config --version
+==========================================================================================
+libcurl:-
+----------
+rpm -Uvh http://nervion.us.es/city-fan/yum-repo/rhel6/x86_64/city-fan.org-release-1-13.rhel6.noarch.rpm
+
+or
+
+vim  /etc/yum.repos.d/city-fan.repo  --->
+[CityFan]
+name=City Fan Repo
+baseurl=http://nervion.us.es/city-fan/yum-repo/rhel$releasever/$basearch/
+enabled=1
+gpgcheck=0
+:wq
+yum clean all
+yum install libcurl
+
+
+
+To install or upgrade cmm simply do the following from the root shell via SSH:-
+-------------------------------------------------------------------------------
+cd /usr/src
+rm -fv /usr/src/cmm.tgz
+wget http://download.configserver.com/cmm.tgz
+tar -xzf cmm.tgz
+cd cmm
+sh install.sh
+rm -Rfv /usr/src/cmm*
+Then login to WHM and scroll to the bottom of the left hand menu and you should see "ConfigServer Mail Manage"
+
+If you want to uninstall, simply:-
+----------------------------------
+cd /usr/src
+rm -fv /usr/src/cmm.tgz
+wget http://download.configserver.com/cmm.tgz
+tar -xzf cmm.tgz
+cd cmm
+sh uninstall.sh
+rm -Rfv /usr/src/cmm*
+
+
+
+
+
+******************
+
