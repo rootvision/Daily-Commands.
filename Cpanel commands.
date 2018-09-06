@@ -13,19 +13,32 @@ Check load average commands:-
 # w
 # uptime
 # top
+# top -c
 # cat /proc/loadavg
+# lvetop      --->   litespeed is running on server
+# mysqladmin pr                 -------> (mysql status)
+# watch mysqladmin pr           -------> (mysql watch)
 
 
 kill the process:-
 ------------------
 # kill -9 PID
 # killall -9 php
+# ps -aufx
+# ps -aufx | grep id/user
 
 
 You can kill httpd, if Apache is consuming high resources:-
 -----------------------------------------------------------
 # killall -9 httpd
 # /etc/init.d/httpd restart
+echo 2 > /proc/sys/vm/drop_caches      --->  (To free up cache from server)
+kill -9 $(ps -A -ostat,ppid | grep -e '[zZ]'| awk '{ print $2 }')   ---> TO kill zombies process
+
+
+Update litespeed:-
+------------------
+/usr/local/lsws/admin/misc/lsup.sh -f -v 5.2
 
 
 To update cpanel license :-
@@ -80,6 +93,9 @@ csf -r                 ===> (To restart firewall)
 csf -a                 ===> (To accept IP)
 csf -x                 ===> (To disable firwall)
 grep -rl IPADDRESS /var/lib//mysql/cphulkd/  ===> (Check Ip address in cPhulk )
+grep 100.100.100.100 /var/log/maillog | grep -i fail
+grep 100.100.100.100 /usr/local/cpanel/logs/login_log
+grep 100.100.100.100 /var/log/exim_mainlog | grep set_id
 
 
 To correct the files/directory permissions inside public_html directory
@@ -89,8 +105,27 @@ find . -type f -exec chmod 644 {} \;
 ======================
 
 
+To check large backup stored under server:-
+-------------------------------------------
+#find ./ -mindepth 1 -maxdepth 3 -size +1G -type f             -----> (enter command under cd /home directory)
+
+
+Deleting tons of files in Linux (Argument list too long):-
+----------------------------------------------------------
+find . -type f -print -delete
+find . -name '*' | xargs rm
+
+
+Login node via ssh:-
+--------------------
+1. ssh root@107.86.17.1 -p 22 (login to node)
+2. vzlist -a | grep IP
+3. vzctl enter ID
+4. csf -r
+
+
 WordPress compromised site clean:-      --->  (Copy all command and excute in shell under his user account)
-==================================
+----------------------------------
 mv public_html public_html_wp_upgrade 
 wget https://wordpress.org/latest.tar.gz
 tar -xf latest.tar.gz 
@@ -111,7 +146,7 @@ cd public_html;find -type f -exec chmod 644 {} \;
 Cronjob Command :-
 ------------------
 crontab -e
-crontab -u samuelba -l
+crontab -u samboy -l
 
 
 maldet scan:-
@@ -138,6 +173,8 @@ To check Email:-
 /usr/sbin/exim -bpr | grep “<” | wc -l    --->  Number of emails in the que
 /usr/sbin/exim -bpr | grep frozen | wc -l   --->  How many Frozen mails on the queue
 /usr/sbin/exim -bpr | grep frozen | awk '{print $3}' | xargs exim -Mrm  --->  Deleteing Frozen Messages
+cat /var/log/exim_mainlog | grep domain.com  | grep "2010-08-04" | wc -l
+tail -n 1000 /var/log/exim_mainlog | grep /home   --->  Find out spamming php script using below command
 
 
 TO check mails :-
@@ -167,6 +204,12 @@ Restart Command:-
 systemctl restart service       ===> (stop, start, status by using service)
 service <service> restart       ===> (stop, start, status by using service)
 /script/restartsrv_service      ===> (stop, start, status by using service)
+/etc/init.d/lsws start          ===> (stop, start, status by using service)
+
+
+To remove history from shell:-
+------------------------------
+cat /dev/null > ~/.bash_history && history -c && exit
 
 
 If Webmail.domainname.TLD is showing default page then do following:-
@@ -193,6 +236,13 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>                          
 # END WordPress
+
+
+To set the redirection from http to https use below code under .htaccess file:-
+-------------------------------------------------------------------------------
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 
 how to increase phpmyadmin import file size :-
